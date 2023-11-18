@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+}
+
+<h2>Inserer nouvelle date</h2>
+
+<br>
+
+<form action="/Prolongement/CreateOccurenceActiviteTemps">
+    <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+    <input type="date" name="datefin">
+    <br>
+    <br>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+</form>
+<br>
+<form action="/Prolongement/VersListeProlongementOccurenceActivite">
+    <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>

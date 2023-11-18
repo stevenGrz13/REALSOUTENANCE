@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idprojet = ViewBag.idprojet;
+}
+
+<h3>Inserer Partenaire Technique:</h3>
+<hr>
+<form action="/Projet/InsertionPartenaire">
+    <input type="hidden" name="idprojet" value="@idprojet">
+    <table class="table">
+        <thead>
+        <tr>
+            <textarea class="form-control" id="partenairetechnique" name="partenairetechnique" rows="4"></textarea>
+        </tr>
+        </thead>
+    </table>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+</form>
+<br>
+<form action="/Projet/Details">
+    <input type="hidden" name="idprojet" value="@idprojet">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>

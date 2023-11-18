@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+    List<PaiementOccurenceActivite> liste = ViewData["listepaiement"] as List<PaiementOccurenceActivite>;
+    double reste = ViewBag.reste;
+    double budget = ViewBag.budget;
+    double total = ViewBag.total;
+    int idoccurenceresultat = ViewBag.idoccurenceresultat;
+    List<Devise> listedevise = ViewData["listedevise"] as List<Devise>;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <form action="/PaiementActivite/VersInsertionPaiementActivite">
+            <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+            <button type="submit" class="btn btn-primary">Ajouter mouvement budgetaire</button>
+        </form>
+
+        <div class="d-flex align-items-center justify-content-between">
+            <h3 class="mt-4">LISTE DES MOUVEMENTS</h3>
+            <form action="/PaiementActivite/VersListePaiementActivite">
+                <div class="d-flex align-items-center">
+                    <select name="iddevise" id="iddevise" class="form-select me-2">
+                        @foreach (var v in listedevise)
+                        {
+                            <option value="@v.Id">@v.Nom</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </div>
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+            </form>
+        </div>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Technicien</th>
+                <th>Motif</th>
+                <th>Montant</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var v in liste)
+            {
+                <tr>
+                    <td>@v.Technicien.Email</td>
+                    <td>@v.Motif</td>
+                    <td>@v.Montant.ToString("N0") </td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="font-weight-bold">@total.ToString("N0") </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p>Budget: <span class="font-weight-bold">@budget.ToString("N0") </span></p>
+        <p>Reste: <span class="font-weight-bold">@reste.ToString("N0") </span></p>
+        <p class="text-danger"><strong>@ViewBag.messageerreur</strong></p>
+
+    </div>
+<br>
+<form action="/OccurenceActivite/RetourVersListeOccurenceActivite">
+    <input type="hidden" name="idoccurenceresultat" value="@idoccurenceresultat">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>
+<br>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

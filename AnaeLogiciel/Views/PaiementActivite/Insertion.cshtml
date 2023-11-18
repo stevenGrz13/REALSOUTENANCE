@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+    List<TechnicienProjet> listetech = ViewData["listetechnicien"] as List<TechnicienProjet>;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h3 class="mb-4">Insertion mouvement budgetaire</h3>
+    
+    <p><span style="color: red;">@ViewBag.messageerreur</span></p>
+    <br>
+    
+    <form action="/PaiementActivite/Create" class="mb-4">
+        <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+
+        <div class="form-group">
+            <label for="idtechnicien">Sélectionner un technicien :</label>
+            <select name="idtechnicien" id="idtechnicien" class="form-control" required>
+                @foreach (var v in listetech)
+                {
+                    <option value="@v.IdTechnicien">@v.Technicien.Email</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="motif">Motif :</label>
+            <input type="text" name="motif" class="form-control" placeholder="Motif" required>
+        </div>
+
+        <div class="form-group">
+            <label for="montant">Montant :</label>
+            <input type="text" name="montant" class="form-control" placeholder="Montant" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dateaction">Date d'action :</label>
+            <input type="date" name="dateaction" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Insérer</button>
+    </form>
+</div>
+<form action="/PaiementActivite/VersListePaiementActivite">
+    <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

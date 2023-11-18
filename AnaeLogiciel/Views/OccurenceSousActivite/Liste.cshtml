@@ -1,0 +1,108 @@
+﻿@{
+    Layout = "_LayoutGlobalProject";
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+    int idoccurenceresultat = ViewBag.idoccurenceresultat;
+    var liste = ViewData["listeoccurencesousactivite"] as PagedList<OccurenceSousActivite>;
+}
+
+<div class="container mt-5">
+    <h2>Liste des Sous-Activités</h2>
+    <br>
+        <div class="input-group mb-3">
+            <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+            <input type="text" id="search" name="search" class="form-control" placeholder="Rechercher...">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+        </div>
+    <br>
+    <form action="/OccurenceSousActivite/VersInsertionOccurenceSousActivite">
+        <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+        <button type="submit" class="btn btn-primary">Ajouter Nouvelle Sous-Activité</button>
+    </form>
+
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Avancement</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var v in liste.Items)
+        {
+            <tr>
+                <td>
+                    @v.Details
+                </td>
+                <td>
+                    <progress id="file" value="@v.Avancement.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" max="100"> @v.Avancement % </progress>
+                </td>
+                <td>
+                    <form action="/OccurenceSousActivite/VersDetailsOccurenceSousActivite">
+                        <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                        <input type="hidden" name="idoccurencesousactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-link">Détails</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/PaiementSousActivite/VersListePaiementSousActivite">
+                        <input type="hidden" name="idoccurencesousactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-link">Execution budgetaire</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/OccurenceSousActivite/VersModif">
+                        <input type="hidden" name="idoccurencesousactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <nav>
+            <ul class="pagination">
+                @if (liste.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?idoccurenceactivite=@(liste.Items[0].IdOccurenceActivite)&page=@(liste.PageNumber - 1)&pageSize=@(liste.PageSize)">Précédent</a>
+                    </li>
+                }
+                @for (int i = 1; i <= liste.TotalPages; i++)
+                {
+                    <li class="page-item @(i == liste.PageNumber ? "active" : "")">
+                        <a class="page-link" href="?idoccurenceactivite=@(liste.Items[0].IdOccurenceActivite)&page=@i&pageSize=@(liste.PageSize)">@i</a>
+                    </li>
+                }
+                @if (liste.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?idoccurenceactivite=@(liste.Items[0].IdOccurenceActivite)&page=@(liste.PageNumber + 1)&pageSize=@(liste.PageSize)">Suivant</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+</div>
+<br>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <form action="/Historique/versDeletedSousActivite">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <button type="submit" class="btn btn-primary">Historique des suppressions</button>
+            </form>
+        </th>
+        <th>
+            <form action="/OccurenceActivite/RetourVersListeOccurenceActivite/">
+                <input type="hidden" name="idoccurenceresultat" value="@idoccurenceresultat">
+                <button type="type" class="btn btn-secondary">Retour Vers Liste Activites</button>
+            </form>    
+        </th>
+    </tr>
+    </thead>
+</table>

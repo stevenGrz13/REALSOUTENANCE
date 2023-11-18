@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idoccurencesousactivite = ViewBag.idoccurencesousactivite;
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+    List<IndicateurSousActivite> liste = ViewData["liste"] as List<IndicateurSousActivite>;
+}
+@ViewBag.messageerreur
+<br>
+<div class="container mt-5">
+    <h3>Insertion Indicateur pour Sous-Activité</h3>
+    <br>
+    <form action="/IndicateurSousActivite/Create">
+        <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+        <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+        <div class="form-group">
+            <label for="idindicateur">Sélectionnez un indicateur</label>
+            <select class="form-control" id="idindicateur" name="idindicateur">
+                @foreach (var v in liste)
+                {
+                    <option value="@v.Id">@v.NomIndicateur</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="target">Target</label>
+            <input type="text" class="form-control" id="target" name="target" placeholder="Target">
+        </div>
+        <br>    
+        <button type="submit" class="btn btn-primary">Ajouter Indicateur</button>
+    </form>
+</div>
+<br>
+<form action="/OccurenceSousActivite/VersDetailsOccurenceSousActivite">
+    <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+    <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>

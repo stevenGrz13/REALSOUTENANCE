@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    List<TechnicienProjet> listetech = ViewData["listetech"] as List<TechnicienProjet>;
+    int idoccurencesousactivite = ViewBag.idoccurencesousactivite;
+}
+
+<h2>Liste des Techniciens</h2>
+
+<br>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Technicien</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in listetech)
+    {
+        <tr>
+            <td>@v.Technicien.Email</td>
+            <td>
+                <form action="/SousActiviteSourceTechnicien/ListeRapportTech">
+                    <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                    <input type="hidden" name="idtechnicien" value="@v.IdTechnicien">
+                    <button type="submit" class="btn btn-primary">Liste Rapport</button>
+                </form>
+            </td>
+        </tr>   
+    }
+    </tbody>
+</table>
+<br>
+<form action="/SousActiviteSourceDeVerification/VersListe">
+    <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>

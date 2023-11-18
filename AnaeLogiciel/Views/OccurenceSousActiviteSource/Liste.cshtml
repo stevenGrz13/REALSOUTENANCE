@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    List<OccurenceSousActiviteSource> liste = ViewData["listesource"] as List<OccurenceSousActiviteSource>;
+    int idoccurencesousactivite = ViewBag.idoccurencesousactivite;
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+}
+
+<h3>Les Source de verifications</h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Source</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in liste)
+    {
+        <tr>
+            <td>@v.SourceDeVerification.Nom</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<br>
+<table>
+    <tr>
+        <th>
+            <form action="/SousActiviteSourceDeVerification/VersInsertion">
+                <button type="submit" class="btn btn-primary">Ajouter Nouvelle</button>
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+            </form>
+        </th>
+        <th>
+            <form action="/SousActiviteSourceTechnicien/VersListeRapport">
+                <button type="submit" class="btn btn-primary">Vers liste techniciens</button>
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+            </form>
+        </th>
+        <th>
+            <form action="/OccurenceSousActivite/VersDetailsOccurenceSousActivite">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                <button type="submit" class="btn btn-secondary">Retour</button>
+            </form>
+        </th>
+    </tr>
+</table>

@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idoccurencesousactivite = ViewBag.idoccurencesousactivite;
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Insérer un Indicateur</h2>
+        </div>
+        <div class="card-body">
+            <form action="/IndicateurSousActivite/CreateBase" method="post" class="form">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+
+                <div class="form-group">
+                    <input type="text" name="nomindicateur" id="nomindicateur" placeholder="Nom de l'Indicateur" class="form-control" required>
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary">Insérer</button>
+            </form>
+            <br>
+            <form action="/OccurenceSousActivite/VersDetailsOccurenceSousActivite" method="post" class="form">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                <button type="submit" class="btn btn-secondary">Retour</button>
+            </form>
+        </div>
+    </div>
+</div>

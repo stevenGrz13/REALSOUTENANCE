@@ -1,0 +1,107 @@
+<style>
+    .cadre-liste {
+        border: 1px solid #ccc;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px; /* Ajustez la marge selon vos besoins */
+    }
+</style>
+
+@{
+    ViewData["Title"] = "Index";
+    var model = ViewData["listeprojet"] as PagedList<Projet>;
+    List<Mois> listemois = ViewData["mois"] as List<Mois>;
+}
+<h3>Liste Projets</h3>
+<br>
+<form action="/Projet/Index">
+<div class="input-group mb-3">
+    <!-- Champs de sélection pour le mois -->
+    <div class="input-group-prepend">
+        <select class="form-control col-2" name="idmois" placeholder="mois">
+            <option value=""></option>
+            @foreach (var v in listemois)
+            {
+                <option value="@v.Id">@v.Nom</option>
+            }
+        </select>
+    </div>
+
+    <!-- Champs de sélection pour l'année -->
+    <div class="input-group-prepend">
+        <input type="text" name="annee" class="form-control col-2" placeholder="Année">
+    </div>
+
+    <!-- Champ de recherche -->
+    <input type="text" id="search" name="search" class="form-control" placeholder="Rechercher...">
+
+    <div class="input-group-append">
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div> <!-- Fermer cette div pour le deuxième groupe d'éléments -->
+</div>
+
+</form>
+
+
+<br>
+<p>
+    <form action="/Projet/Create">
+        <button type="submit" class="btn btn-primary">Nouveau Projet</button>
+    </form>
+</p>
+
+<div class="cadre-liste">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Sigle</th>
+                <th>Debut Prevision</th>
+                <th>Fin Prevision</th>
+                <th>Avancement</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in model.Items)
+            {
+                <tr>
+                    <td>@v.Sigle</td>
+                    <td>@v.DateDebutPrevision</td>
+                    <td>@v.DateFinPrevision</td>
+                    <td>
+                        <progress id="file" value="@v.Avancement.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" max="100"> @v.Avancement.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) % </progress>
+                    </td>
+                    <td>
+                        <form action="/Projet/Details">
+                            <input type="hidden" name="idprojet" value="@v.Id">
+                            <td><input type="submit" value="details"></td>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination">
+            @if (model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(model.PageNumber - 1)&pageSize=@(model.PageSize)">Précédent</a>
+                </li>
+            }
+            @for (int i = 1; i <= model.TotalPages; i++)
+            {
+                <li class="page-item @(i == model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="?page=@i&pageSize=@(model.PageSize)">@i</a>
+                </li>
+            }
+            @if (model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(model.PageNumber + 1)&pageSize=@(model.PageSize)">Suivant</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

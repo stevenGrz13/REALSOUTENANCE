@@ -1,0 +1,52 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    List<RapportIndicateurActivite> liste = ViewData["liste"] as List<RapportIndicateurActivite>;
+    int idoccurenceactiviteindicateur = ViewBag.idoccurenceactiviteindicateur;
+}
+
+<h2>Liste Actions</h2>
+<br>
+Technicien : @ViewBag.nomtechnicien
+<br>
+Indicateur : @ViewBag.nomindicateur
+<br>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th>Quantité Effectuée</th>
+        <th>Date de Début</th>
+        <th>Date de Fin</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in liste)
+    {
+        <tr>
+            <td>@v.QuantiteEffectue</td>
+            <td>@v.DateDebut</td>
+            <td>@v.DateFin</td>
+            <td>
+                <form action="/TravailTechnicienActivite/VersModifAction">
+                    <input type="hidden" name="idoccurenceactiviteindicateur" value="@idoccurenceactiviteindicateur">
+                    <input type="hidden" name="idaction" value="@v.Id">
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </form>
+            </td>
+            <td>
+                <form action="/TravailTechnicienActivite/ValidationActionActivite">
+                    <input type="hidden" name="idoccurenceactiviteindicateur" value="@idoccurenceactiviteindicateur">
+                    <input type="hidden" name="idaction" value="@v.Id">
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<br>
+<form action="/IndicateurActivite/DetailsIndicateurActivite">
+    <input type="hidden" name="idoccurenceactiviteindicateur" value="@idoccurenceactiviteindicateur">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>

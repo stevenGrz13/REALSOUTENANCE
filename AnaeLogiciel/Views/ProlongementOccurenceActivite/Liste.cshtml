@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    List<ProlongementBudgetOccurenceActivite> listebudget = ViewData["listeprolongementbudgetaire"] as List<ProlongementBudgetOccurenceActivite>;
+    List<ProlongementOccurenceActivite> liste = ViewData["listeprolongement"] as List<ProlongementOccurenceActivite>;
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+}
+
+<h3>Liste prolongement temporelle</h3>
+<br>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nouvelle Date Fin</th>
+        <th>Prolongé le</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in liste)
+    {
+        <tr>
+            <td>@v.DateFin</td>
+            <td>@v.DateAction</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<h3>Liste prolongement budgetaire</h3>
+<br>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Montant</th>
+        <th>Prolongé le</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in listebudget)
+    {
+        <tr>
+            <td>@v.Budget.ToString("N0") Ar</td>
+            <td>@v.DateAction</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<br>
+
+<table>
+    <tr>
+        <th>
+            <form action="/Prolongement/VersInsertionOccurenceActiviteTemps">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <button type="submit" class="btn btn-primary">Prolonger Temporellement</button>
+            </form>
+        </th>
+        <th>
+            <form action="/Prolongement/VersInsertionOccurenceActiviteBudget">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <button type="submit" class="btn btn-primary">Prolonger Budgetairement</button>
+            </form>
+        </th>
+        <th>
+            <form action="/OccurenceActivite/RetourVersDetailsOccurenceActivite">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <button type="submit" class="btn btn-secondary">Retour vers Details</button>
+            </form>
+        </th>
+    </tr>
+</table>

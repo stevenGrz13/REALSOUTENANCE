@@ -1,0 +1,53 @@
+﻿@using Swashbuckle.AspNetCore.SwaggerGen
+@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    List<OccurenceActiviteSourceTechnicien> liste = ViewData["listesourcetech"] as List<OccurenceActiviteSourceTechnicien>;
+    string nomtechnicien = ViewBag.nomtechnicien;
+    int idtechnicien = ViewBag.idtechnicien;
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+}
+
+<h2>Liste Rapport de @nomtechnicien</h2>
+<br>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Source de verification</th>
+        <th>Lien</th>
+        <th>Date</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in liste)
+    {
+        <tr>
+            <td>@v.SourceDeVerification.Nom</td>
+            <td>@v.LienFichier</td>
+            <td>@v.DateAction</td>
+        </tr>   
+    }
+    </tbody>
+</table>
+<br>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <form action="/ActiviteSourceTechnicien/VersInsertion">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <input type="hidden" name="idtechnicien" value="@idtechnicien">
+                <button type="submit" class="btn btn-primary">Ajouter Nouvelle</button>
+            </form>    
+        </th>
+        <th>
+            <form action="/ActiviteSourceTechnicien/VersListeRapport">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <button type="submit" class="btn btn-secondary">Retour</button>
+            </form>
+        </th>
+    </tr>
+    </thead>
+</table>

@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    var model = ViewData["listeoccurenceactivite"] as PagedList<OccurenceActivite>;
+    int idprojet = Context.Session.GetInt32("idprojet").GetValueOrDefault();
+    int idoccurenceresultat = ViewBag.idoccurenceresultat;
+}
+<div class="container mt-5">
+    <h2>Liste des activités</h2>
+
+    <br>
+    <form action="/OccurenceActivite/ListeOccurenceActivites">
+        <div class="input-group mb-3">
+            <input type="hidden" name="idoccurenceresultat" value="@idoccurenceresultat">
+            <input type="text" id="search" name="search" class="form-control" placeholder="Rechercher...">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+        </div>
+    </form>
+    <form action="/OccurenceActivite/VersInsertionOccurenceActivite">
+        <input type="hidden" name="idoccurenceresultat" value="@idoccurenceresultat">
+        <button type="submit" class="btn btn-primary">Ajouter activité</button>
+    </form>
+    <table class="table mt-3">
+        <thead class="thead-dark">
+        <tr>
+            <th>Activité</th>
+            <th>Avancement</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var v in model.Items)
+        {
+            <tr>
+                <td>
+                    @v.Details
+                </td>
+                <td>
+                    <progress id="file" value="@v.Avancement.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" max="100"> @v.Avancement % </progress>
+                </td>
+                <td>
+                    <form action="/OccurenceActivite/Details">
+                        <input type="hidden" name="idoccurenceactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-link">Détails</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/OccurenceSousActivite/ListeOccurenceSousActivite">
+                        <input type="hidden" name="idoccurenceactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-link">Vers Sous-Activité</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/PaiementActivite/VersListePaiementActivite">
+                        <input type="hidden" name="idoccurenceactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-link">Execution budgetaire</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/OccurenceActivite/VersModif">
+                        <input type="hidden" name="idoccurenceactivite" value="@v.Id">
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination">
+            @if (model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?idoccurenceresultat=@(model.Items[0].IdOccurenceResultat)&page=@(model.PageNumber - 1)&pageSize=@(model.PageSize)">Précédent</a>
+                </li>
+            }
+            @for (int i = 1; i <= model.TotalPages; i++)
+            {
+                <li class="page-item @(i == model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="?idoccurenceresultat=@(model.Items[0].IdOccurenceResultat)&page=@i&pageSize=@(model.PageSize)">@i</a>
+                </li>
+            }
+            @if (model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?idoccurenceresultat=@(model.Items[0].IdOccurenceResultat)&page=@(model.PageNumber + 1)&pageSize=@(model.PageSize)">Suivant</a>
+                </li>
+            }
+        </ul>
+    </nav>
+
+</div>
+
+<br>
+
+<table>
+    <thead>
+    <tr>
+        <th>
+            <form action="/Historique/versDeletedActivite">
+                <input type="hidden" name="idoccurenceresultat" value="@idoccurenceresultat">
+                <button class="btn btn-primary">Historique des suppressions</button>
+            </form>
+        </th>
+        <th>
+            <form action="/Projet/RetourVersDetails">
+                <input type="hidden" name="idprojet" value="@idprojet">
+                <button type="submit" class="btn btn-secondary">Retour Vers Details Projet</button>
+            </form>    
+        </th>
+    </tr>
+    </thead>
+</table>

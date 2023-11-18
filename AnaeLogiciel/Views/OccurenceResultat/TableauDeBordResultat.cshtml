@@ -1,0 +1,141 @@
+﻿@{
+    ViewBag.Title = "Calendrier des Activités";
+    Layout = "_LayoutGlobalProject";
+    var activites = ViewData["listeactivite"] as List<OccurenceActivite>;
+    var dates = ViewData["listedate"] as List<DateRealisationActivite>;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(31, 1fr); /* Utilisation d'un grand nombre pour s'assurer qu'il y a suffisamment de colonnes */
+            grid-gap: 5px;
+            margin: 20px;
+        }
+        
+        .secondcalendar {
+                    display: grid;
+                    grid-template-columns: repeat(31, 1fr); /* Utilisation d'un grand nombre pour s'assurer qu'il y a suffisamment de colonnes */
+                    grid-gap: 5px;
+                    margin: 20px;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .secondday {
+                    width: 30px;
+                    height: 30px;
+                    border: 1px solid #ccc;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+        .month-header {
+            grid-column: span 31; /* Utilisation d'un grand nombre pour s'assurer qu'il y a suffisamment de colonnes */
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .in-range {
+            background-color: lightblue;
+        }
+        
+        .in-realization-range {
+                    background-color: yellow;
+                }
+                
+        .out-of-range {
+                background-color: red;
+            }
+            
+            .legend {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 10px;
+                    }
+            
+                    .legend-item {
+                        display: flex;
+                        align-items: center;
+                        margin-left: 10px;
+                    }
+            
+                    .legend-item .color-box {
+                        width: 20px;
+                        height: 20px;
+                        margin-right: 5px;
+                    }
+            
+                    .legend-item .color-box.in-range {
+                        background-color: lightblue;
+                    }
+            
+                    .legend-item .color-box.in-realization-range {
+                        background-color: yellow;
+                    }
+            
+                    .legend-item .color-box.out-of-range {
+                        background-color: red;
+                    }
+    </style>
+</head>
+<body>
+    <div class="month-header">@activites[0].DateDebut.ToString("MMMM yyyy")</div>
+<br>
+<div class="legend">
+        <div class="legend-item">
+            <div class="color-box in-realization-range"></div>
+            <span>a temps</span>
+        </div>
+        <div class="legend-item">
+            <div class="color-box out-of-range"></div>
+            <span>en retard</span>
+        </div>
+    </div>
+    <br>
+@foreach (var activite in activites)
+{
+    @activite.Details
+    <br>  
+    <div class="calendar">
+        @for (int day = 1; day <= DateTime.DaysInMonth(activite.DateDebut.Year, activite.DateDebut.Month); day++)
+        {
+            var currentDate = new DateOnly(activite.DateDebut.Year, activite.DateDebut.Month, day);
+            var isInRange = currentDate >= activite.DateDebut && currentDate <= activite.DateFin;
+
+            <div class="day @(isInRange ? "in-range" : "")">@day</div>
+        }
+    </div>
+    @foreach (var date in dates)
+    {
+        if (date.IdOccurenceActivite == activite.Id)
+        {
+            <div class="secondcalendar">
+                @for (int day = 1; day <= DateTime.DaysInMonth(date.DateDebutRealisation.Year, date.DateDebutRealisation.Month); day++)
+                {
+                    var currentDate = new DateOnly(date.DateDebutRealisation.Year, date.DateDebutRealisation.Month, day);
+                    var isInRange = currentDate >= activite.DateDebut && currentDate <= activite.DateFin;
+                    var isOutsideRange = !isInRange && currentDate >= date.DateDebutRealisation && currentDate <= date.DateFinRealisation;
+                    var isInRealizationRange = currentDate >= date.DateDebutRealisation && currentDate <= date.DateFinRealisation;
+                    
+                    <div class="secondday @(isOutsideRange ? "out-of-range" : isInRealizationRange ? "in-realization-range" : "")">@day</div>
+                }
+            </div>   
+        }
+    }
+}
+</body>
+</html>

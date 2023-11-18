@@ -1,0 +1,356 @@
+@model AnaeLogiciel.Models.Projet
+
+@{
+    ViewData["Title"] = "Details";
+    List<ProjetComposant> liste = ViewData["listecomposant"] as List<ProjetComposant>;
+    List<OccurenceResultat> lister = ViewData["listeoccurenceresultat"] as List<OccurenceResultat>;
+    List<TechnicienProjet> listet = ViewData["listetechnicien"] as List<TechnicienProjet>;
+    List<ProjetPartenaireTechnique> listep = ViewData["listepartenaire"] as List<ProjetPartenaireTechnique>;
+    List<ProjetComposant> listec = ViewData["listecomposant"] as List<ProjetComposant>;
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    // Vérifiez si Model.Avancement est égal à 100
+    if (@Model.Avancement == 100) {
+        $('#myModal').modal('show');
+    }
+});
+</script>
+
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Ce projet a atteint 100%, voulez vous le finaliser?
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <form action="/DateRealisationProjet/FinalisationProjet">
+                        <input type="hidden" name="idprojet" value="@Model.Id">
+                        <button type="submit" class="btn btn-primary">Oui</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non, Pas encore</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Utilisez JavaScript pour ouvrir le modal automatiquement -->
+
+<div class="container mt-5">
+    <table class="table">
+        <thead>
+        <tr>
+            <th><h3>@Model.Nom</h3></th>
+            <th class="@Model.Couleur">@Model.Message</th>
+        </tr>
+        </thead>
+    </table>
+
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-3">Sigle</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Sigle)</dd>
+                <hr />
+                
+                <dt class="col-sm-3">Début</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.DateDebutPrevision)</dd>
+                <hr />
+        
+                <dt class="col-sm-3">Fin</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.DateFinPrevision)</dd>
+                <hr />
+        
+                <dt class="col-sm-3">Avancement</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Avancement) %</dd>
+                <hr />
+        
+                <dt class="col-sm-3">Détails</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Details)</dd>
+                <hr />
+        
+                <dt class="col-sm-3">Partenaire Financier</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Bailleur.Nom)</dd>
+                <hr />
+        
+                <dt class="col-sm-3">Budget</dt>
+                <dd class="col-sm-9">@Model.Budget.ToString("N0") Ar</dd>
+                <hr />
+                
+                <table>
+                    <thead>
+                    <tr>
+                        <th>
+                            <form action="/TableauDeBordProjet/VersTableau">
+                                <dd class="col-sm-9"><button type="submit" class="btn btn-primary">Tableau de bord budgetaire</button></dd>
+                            </form>
+                        </th>
+                        <th>
+                            <form action="/Site/VersListeSiteProjet">
+                                <dd class="col-sm-9"><button type="submit" class="btn btn-primary">Sites d'interventions</button></dd>
+                            </form>
+                        </th>
+                        <th>
+                            <form action="/Projet/ReadMyCSV" method="post" enctype="multipart/form-data" class="form-row">
+                                <div class="form-group col-auto">
+                                    <label for="fileInput">Importer Artisans :</label>
+                                    <input type="file" id="fileInput" name="file" accept=".csv" class="form-control">
+                                </div>
+                                <br>
+                                <div class="form-group col-auto">
+                                    <button type="submit" class="btn btn-primary">Importer</button>
+                                </div>
+                            </form>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+                @if (ViewBag.InsertedRowCount > 0)
+                {
+                    <script>
+                        alert('@ViewBag.InsertedRowCount' + ' artisants ont été insérées avec succès.');
+                    </script>
+                }
+
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            <form action="/Projet/VersAffectationTechnicien">
+                <button type="submit" class="btn btn-primary mt-4">Affecter techniciens</button>
+            </form>
+            <h3 class="mt-4">Techniciens</h3>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Nom</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var v in listet)
+                    {
+                        <tr>
+                            <td>@v.Technicien.Email</td>
+                            <td>
+                                <form action="/Technicien/DesaffecterTechnicien">
+                                    <input type="hidden" name="idtechnicien" value="@v.IdTechnicien">
+                                    <button type="submit" class="btn btn-danger">Retirer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h3 class="mt-4">Composants</h3>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nom</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in listec)
+            {
+                <tr>
+                    <td>@v.Composant</td>
+                    <td>
+                        <form action="/Projet/VersModifComposant">
+                            <input type="hidden" name="idcomposant" value="@v.Id">
+                            <button type="submit" class="btn btn-primary">Modifier</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/Projet/SupprimerComposant">
+                            <input type="hidden" name="idcomposant" value="@v.Id">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        <tr>
+            <td>
+                <form action="/Projet/AjoutComposant">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModals">
+                        Ajouter composant
+                    </button>
+                    <div class="modal fade" id="myModals" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Composant</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea class="form-control" id="composant" name="composant" rows="4"></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">
+                                        Ajouter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h3 class="mt-4">Résultats</h3>
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th>Nom</th>
+        <th>Avancement</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in lister)
+    {
+        <tr>
+            <td>@v.NomResultat</td>
+            <td>
+                <progress id="file" value="@v.Avancement.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" max="100"> @v.Avancement % </progress>
+            </td>
+            <td>
+                <form action="/OccurenceActivite/ListeOccurenceActivites">
+                    <input type="hidden" name="idoccurenceresultat" value="@v.Id">
+                    <button type="submit" class="btn btn-link">Liste activités</button>
+                </form>
+            </td>
+            <td>
+                <form action="/OccurenceResultat/VersTableauDeBord">
+                    <input type="hidden" name="idoccurenceresultat" value="@v.Id">
+                    <button type="submit" class="btn btn-secondary">Visualiser</button>
+                </form>
+            </td>
+            <td>
+                <form action="/OccurenceResultat/deleteResultat">
+                    <input type="hidden" name="idoccurenceresultat" value="@v.Id">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<form action="/Resultat/InsertionOccurenceResultat">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalR">
+        Ajouter resultat
+    </button>
+    <div class="modal fade" id="myModalR" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Taper le resultat</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <input type="hidden" name="idprojet" value="@Context.Session.GetInt32("idprojet")">
+                <div class="modal-body">
+                    <textarea class="form-control" id="nomresultat" name="nomresultat" rows="4"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Ajouter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+    
+<br>
+<form action="/Historique/versDeletedResultat">
+    <button type="submit" class="btn btn-primary">Historique des suppressions</button>
+</form>
+
+<br>
+    
+    <h3 class="mt-4">Partenaires Technique</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in listep)
+            {
+                <tr>
+                    <td>@v.PartenaireTechnique</td>
+                    <td>
+                        <form action="/Projet/VersModifPartenaire">
+                            <input type="hidden" name="idpartenaire" value="@v.Id">
+                            <button type="submit" class="btn btn-primary">Modifier</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/Projet/SupprimerPartenaire">
+                            <input type="hidden" name="idpartenaire" value="@v.Id">
+                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>   
+            }
+        </tbody>
+    </table>
+
+    <br>
+    
+    <table>
+        <tr>
+            <th>
+                <form action="/Prolongement/VersListeProlongementProjet">
+                    <input type="hidden" name="idprojet" value="@Model.Id">
+                    <button type="submit" class="btn btn-primary">Prolongement</button>
+                </form>
+            </th>
+            <th>
+                <form action="/Projet/VersInsertionPartenaireTechnique">
+                    <input type="hidden" name="idprojet" value="@Model.Id">
+                    <button type="submit" class="btn btn-primary">Ajouter partenaire technique</button>
+                </form>
+            </th>
+            <th>
+                <form action="/ExportPDF/GeneretePDF">
+                    <button type="submit" class="btn btn-primary">Exporter en PDF</button>
+                </form>
+            </th>
+            <th>
+                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Modifier</a>            
+            </th>
+            <th>
+                <a asp-action="Index" class="btn btn-secondary">Retour</a>            
+            </th>
+        </tr>
+    </table>
+</div>
+<br>

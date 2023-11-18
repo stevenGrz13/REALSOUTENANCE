@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "title";
+    int idoccurencesousactivite = ViewBag.idoccurencesousactivite;
+    Layout = "_LayoutGlobalProject";
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+    OccurenceSousActivite osc = ViewData["osc"] as OccurenceSousActivite;
+    List<OccurenceSousActiviteIndicateur> listeindic = ViewData["liste"] as List<OccurenceSousActiviteIndicateur>;
+}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>@osc.Details</th>
+        <th>Avancement: @osc.Avancement.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) %</th>
+        <th>Budget: @osc.Budget.ToString("N0") Ar</th>
+        <th class="@osc.Couleur">@osc.Message</th>
+    </tr>
+    </thead>
+</table>
+<br>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <form action="/IndicateurSousActivite/versCreateBase">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                <button type="submit" class="btn btn-primary">Inserer nouvel indicateur</button>
+            </form>
+        </th>
+        <th>
+            <form action="/IndicateurSousActivite/VersInsertionBaseSousActiviteIndicateur">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                <button type="submit" class="btn btn-primary">Ajouter quantite indicateur</button>
+            </form>
+        </th>
+    </tr>
+    </thead>
+</table>
+<br>
+<div class="container mt-5">
+    <br>
+    <h3>Target Indicateur</h3>
+    <br>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th>Indicateur</th>
+            <th>Target</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var v in listeindic)
+        {
+            <tr>
+                <td>@v.IndicateurSousActivite.NomIndicateur</td>
+                <td>@v.Target</td>
+                <td>
+                    <form action="/IndicateurSousActivite/DetailsIndicateurSousActivite">
+                        <input type="hidden" name="idoccurencesousactiviteindicateur" value="@v.Id">
+                        <button type="submit" class="btn btn-primary">Etat</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/IndicateurSousActivite/VersModif">
+                        <input type="hidden" name="idoccurencesousactiviteindicateur" value="@v.Id">
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <br>
+</div>
+<br>
+
+<table>
+    <tr>
+        <th>
+            <form action="/SousActiviteSourceDeVerification/VersListe">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                <button type="submit" class="btn btn-primary">Source de verification</button>
+            </form>   
+        </th>
+        <th>
+            <form action="/OccurenceSousActivite/deleteSousActivite">
+                <input type="hidden" name="idoccurencesousactivite" value="@idoccurencesousactivite">
+                <button type="submit" class="btn btn-danger">Supprimer</button>
+            </form>   
+        </th>
+        <th>
+            <form action="/OccurenceSousActivite/RetourVersListeOccurenceSousActivite/">
+                <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+                <button type="submit" class="btn btn-secondary">Retour Vers Liste Sous Activites</button>
+            </form>
+        </th>
+    </tr>
+</table>

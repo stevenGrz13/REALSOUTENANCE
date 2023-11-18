@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutGlobalProject";
+    int idoccurenceactivite = ViewBag.idoccurenceactivite;
+}
+
+<h2>Taper le montant</h2>
+<br>
+<p><span style="color: red;">@ViewBag.messageerreur</span></p>
+<br>
+<form action="/Prolongement/CreateOccurenceActiviteBudget">
+    <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+    <input type="text" name="budget" class="form-control" placeholder="Budget">
+    <br>
+    <br>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+</form>
+<br>
+<form action="/Prolongement/VersListeProlongementOccurenceActivite">
+    <input type="hidden" name="idoccurenceactivite" value="@idoccurenceactivite">
+    <button type="submit" class="btn btn-secondary">Retour</button>
+</form>
